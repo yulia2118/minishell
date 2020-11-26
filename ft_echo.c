@@ -36,15 +36,14 @@ int		ft_echo(char **argv)
 		flag = compare_str(argv[1], "-n");
 		if (flag == 0)
 			i = 1;
-		while (argv[++i])
+		while (argv[i])
 		{
+			i++;
 			ft_putstr_fd(argv[i], 1);
-			if (argv[i + 1])
-				write(1, " ", 1);
 		}
 	}
 	else
-		return (write(1, "\n", 1));
+		write(1, "\n", 1);
 	if (flag)
 		write(1, "\n", 1);
 	return (errno);
