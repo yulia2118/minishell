@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_export.c                                        :+:      :+:    :+:   */
+/*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fdarrin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/18 18:34:56 by fdarrin           #+#    #+#             */
-/*   Updated: 2020/11/18 18:35:01 by fdarrin          ###   ########.fr       */
+/*   Created: 2020/11/25 22:41:14 by fdarrin           #+#    #+#             */
+/*   Updated: 2020/11/25 22:41:20 by fdarrin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,28 @@ int		compare_str(const char *s1, const char *s2)
 	return (*s1 - *s2);
 }
 
-int		ft_strlen2(char **array)
+void		free_env(void *argv)
 {
-	int		i;
+	t_env	*env;
 
-	i = 0;
-	while (array[i])
-		i++;
-	return (i);
+	env = (t_env*)argv;
+	free(env->value);
+	free(env->key);
+	free(env);
 }
 
-void	change_env(t_env *current_env, t_env *env)
+void		sort_env(t_list *first_elem, t_list *second_elem, t_list *temp_elem)
+{
+	void	*temp_content;
+
+	if (temp_elem)
+		first_elem->next->next = temp_elem;
+	temp_content = first_elem->content;
+	first_elem->content = second_elem->content;
+	second_elem->content = temp_content;
+}
+
+void		change_env(t_env *current_env, t_env *env)
 {
 	if (current_env->value && env->value == NULL)
 		free(env->value);
@@ -47,18 +58,7 @@ void	change_env(t_env *current_env, t_env *env)
 	free(env);
 }
 
-void	sort_env(t_list *first_elem, t_list *second_elem, t_list *temp_elem)
-{
-	void	*temp_content;
-
-	if (temp_elem)
-		first_elem->next->next = temp_elem;
-	temp_content = first_elem->content;
-	first_elem->content = second_elem->content;
-	second_elem->content = temp_content;
-}
-
-void	add_env(t_list *env_list, t_env *env)
+void		add_env(t_list *env_list, t_env *env)
 {
 	int		cmp;
 	t_list	*temp_elem;
@@ -66,7 +66,7 @@ void	add_env(t_list *env_list, t_env *env)
 
 	while (env_list)
 	{
-		current_env = (t_env*)env_list->content;
+		current_env = env_list->content;
 		cmp = compare_str(env->key, current_env->key);
 		if (cmp <= 0 || env_list->next == NULL)
 		{
@@ -86,7 +86,7 @@ void	add_env(t_list *env_list, t_env *env)
 	}
 }
 
-t_env	*init_env(char **key_value)
+t_env		*init_env(char **key_value)
 {
 	t_env	*env;
 
@@ -97,7 +97,7 @@ t_env	*init_env(char **key_value)
 	return (env);
 }
 
-t_list	*list_from_environ(char **environ)
+t_list		*list_from_environ(char **environ)
 {
 	char	**key_value;
 	t_env	*env;
@@ -119,57 +119,55 @@ t_list	*list_from_environ(char **environ)
 	return (env_list);
 }
 
-void	print_export(t_list *env_list)
+void		remove_env(t_list *env_list, t_list *prev_element)
 {
-	t_env	env;
+	t_list *tmp_elem;
 
-	while (env_list)
+	free_env(env_list->content);
+	if (prev_element)
 	{
-		env = *(t_env*)env_list->content;
-		ft_putstr_fd("declare -x ", 1);
-		ft_putstr_fd(env.key, 1);
-		if (env.value)
-		{
-			ft_putstr_fd("=\"", 1);
-			ft_putstr_fd(env.value, 1);
-			ft_putstr_fd("\"\n", 1);
-		}
-		else
-			write(1, "\n", 1);
-		env_list = env_list->next;
+		prev_element->next = env_list->next;
+		free(env_list);
+	}
+	else if (env_list->next)
+	{
+		tmp_elem = env_list->next;
+		env_list->content = env_list->next->content;
+		env_list->next = env_list->next->next;
+		free(tmp_elem);
 	}
 }
 
-int		ft_export(int argc, char **argv, t_list *env_list)
+int			ft_unset(char **argv, t_list *env_list)
 {
-	char	**key_value;
+	t_list	*prev_element;
+	t_env	*current_env;
 
-	if (argc == 1)
-		print_export(env_list);
-	else
+	while (*argv)
 	{
-		while (*argv)
+		prev_element = NULL;
+		while (env_list)
 		{
-			key_value = ft_split(*argv, '=');
-			if (ft_strlen2(key_value) == 1)
+			current_env = (t_env*)env_list->content;
+			if (!compare_str(current_env->key, *argv))
 			{
-				if (ft_strchr(*argv, '='))
-					key_value[1] = ft_strdup("\0");
+				remove_env(env_list, prev_element);
+				return (errno);
 			}
-			add_env(env_list, init_env(key_value));
-			free(key_value);
-			argv++;
+			prev_element = env_list;
+			env_list = env_list->next;
 		}
+		argv++;
 	}
 	return (errno);
 }
 
-int		main(int argc, char **argv, char **environ)
+int			main(int argc, char **argv, char **environ)
 {
 	t_list	*env_list;
 	int		res;
 
 	env_list = list_from_environ(environ);
-	ft_export(argc, argv, env_list);
+	ft_unset(argv, env_list);
 	return (res);
 }
