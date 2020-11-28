@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int		compare_str(const char *s1, const char *s2)
+int			compare_str(const char *s1, const char *s2)
 {
 	while (*s1)
 	{
@@ -24,7 +24,7 @@ int		compare_str(const char *s1, const char *s2)
 	return (*s1 - *s2);
 }
 
-int		ft_strlen2(char **array)
+int			ft_strlen2(char **array)
 {
 	int		i;
 
@@ -34,7 +34,7 @@ int		ft_strlen2(char **array)
 	return (i);
 }
 
-void	change_env(t_env *current_env, t_env *env)
+void		change_env(t_env *current_env, t_env *env)
 {
 	if (current_env->value && env->value == NULL)
 		free(env->value);
@@ -47,7 +47,7 @@ void	change_env(t_env *current_env, t_env *env)
 	free(env);
 }
 
-void	sort_env(t_list *first_elem, t_list *second_elem, t_list *temp_elem)
+void		sort_env(t_list *first_elem, t_list *second_elem, t_list *temp_elem)
 {
 	void	*temp_content;
 
@@ -58,7 +58,18 @@ void	sort_env(t_list *first_elem, t_list *second_elem, t_list *temp_elem)
 	second_elem->content = temp_content;
 }
 
-void	add_env(t_list *env_list, t_env *env)
+t_env		*init_env(char **key_value)
+{
+	t_env	*env;
+
+	if ((env = (t_env*)malloc(sizeof(t_env))) == NULL)
+		return (NULL);
+	env->key = key_value[0];
+	env->value = key_value[1];
+	return (env);
+}
+
+void		add_env(t_list *env_list, t_env *env)
 {
 	int		cmp;
 	t_list	*temp_elem;
@@ -86,40 +97,7 @@ void	add_env(t_list *env_list, t_env *env)
 	}
 }
 
-t_env	*init_env(char **key_value)
-{
-	t_env	*env;
-
-	if ((env = (t_env*)malloc(sizeof(t_env))) == NULL)
-		return (NULL);
-	env->key = key_value[0];
-	env->value = key_value[1];
-	return (env);
-}
-
-t_list	*list_from_environ(char **environ)
-{
-	char	**key_value;
-	t_env	*env;
-	t_list	*env_list;
-
-	env_list = NULL;
-	while (*environ)
-	{
-		key_value = ft_split(*environ, '=');
-		env = init_env(key_value);
-		free(key_value[2]);
-		free(key_value);
-		if (!env_list)
-			env_list = ft_lstnew(env);
-		else
-			add_env(env_list, env);
-		environ++;
-	}
-	return (env_list);
-}
-
-void	print_export(t_list *env_list)
+void		print_export(t_list *env_list)
 {
 	t_env	env;
 
@@ -140,7 +118,57 @@ void	print_export(t_list *env_list)
 	}
 }
 
-int		ft_export(int argc, char **argv, char **environ)
+t_list		*get_sorted_list(t_list *env_list)
+{
+	t_list	*temp_content;
+	t_list	*sorted_list;
+	t_env	*first_elem;
+	t_env	*second_elem;
+	int		size;
+
+	sorted_list = env_list;
+	size = ft_lstsize(env_list);
+	while (size--)
+	{
+		env_list = sorted_list;
+		while (env_list->next)
+		{
+			first_elem = (t_env*)env_list->content;
+			second_elem = (t_env*)env_list->next->content;
+			if (compare_str(first_elem->key, second_elem->key) > 0)
+			{
+				temp_content = env_list->content;
+				env_list->content = env_list->next->content;
+				env_list->next->content = temp_content;
+			}
+			env_list = env_list->next;
+		}
+	}
+	return (sorted_list);
+}
+
+t_list		*list_from_environ(char **environ)
+{
+	t_env	*env;
+	t_list	*env_list;
+	int		i;
+
+	env_list = NULL;
+	while (*environ)
+	{
+		if (!(env = (t_env*)malloc(sizeof(t_env))))
+			return (NULL);
+		i = ft_strchr(*environ, '=') - *environ;
+		env->key = ft_substr(*environ, 0, i);
+		env->value = ft_substr(*environ, i + 1, ft_strlen(*environ) - i - 1);
+		ft_lstadd_back(&env_list, ft_lstnew(env));
+		environ++;
+	}
+	env_list = get_sorted_list(env_list);
+	return (env_list);
+}
+
+int			ft_export(int argc, char **argv, char **environ)
 {
 	t_list	*env_list;
 	char	**key_value;
@@ -166,7 +194,7 @@ int		ft_export(int argc, char **argv, char **environ)
 	return (errno);
 }
 
-int		main(int argc, char **argv, char **environ)
+int			main(int argc, char **argv, char **environ)
 {
 	int		res;
 
