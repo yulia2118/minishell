@@ -140,10 +140,12 @@ void	print_export(t_list *env_list)
 	}
 }
 
-int		ft_export(int argc, char **argv, t_list *env_list)
+int		ft_export(int argc, char **argv, char **environ)
 {
+	t_list	*env_list;
 	char	**key_value;
 
+	env_list = list_from_environ(environ);
 	if (argc == 1)
 		print_export(env_list);
 	else
@@ -166,10 +168,8 @@ int		ft_export(int argc, char **argv, t_list *env_list)
 
 int		main(int argc, char **argv, char **environ)
 {
-	t_list	*env_list;
 	int		res;
 
-	env_list = list_from_environ(environ);
-	ft_export(argc, argv, env_list);
+	res = ft_export(argc, argv, environ);
 	return (res);
 }
