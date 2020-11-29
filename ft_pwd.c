@@ -10,30 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <limits.h>
+#include "minishell.h"
 
-int		ft_strlen(char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
-
-void	ft_pwd(void)
+int			ft_pwd(void)
 {
 	char	dir[PATH_MAX];
 
 	getcwd(dir, PATH_MAX);
 	write(1, dir, ft_strlen(dir));
 	write(1, "\n", 1);
+	return (errno);
 }
 
-int		main(void)
-{
-	ft_pwd();
-	return (0);
-}

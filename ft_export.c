@@ -193,11 +193,3 @@ int			ft_export(int argc, char **argv, char **environ)
 	}
 	return (errno);
 }
-
-int			main(int argc, char **argv, char **environ)
-{
-	int		res;
-
-	res = ft_export(argc, argv, environ);
-	return (res);
-}

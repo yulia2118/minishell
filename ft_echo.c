@@ -48,8 +48,3 @@ int		ft_echo(char **argv)
 		write(1, "\n", 1);
 	return (errno);
 }
-
-int		main(int argc, char **argv)
-{
-	return (ft_echo(argv));
-}

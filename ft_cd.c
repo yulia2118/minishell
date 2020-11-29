@@ -31,7 +31,7 @@ char		*get_env_value(char *var, char **environ)
 	if (!(key = (char *)malloc(sizeof(char) * (ft_strlen(var) + 2))))
 		return (NULL);
 	ft_strlcat(key, var, ft_strlen(var));
-	ft_strlcat(key, "=/0", 2);
+	ft_strlcat(key, "=\0", 2);
 	while (*environ)
 	{
 		if (!ft_strncmp(*environ, key, ft_strlen(key)))
@@ -60,6 +60,6 @@ int			ft_cd(char **argv, char **environ)
 		return (errno);
 	}
 	if (chdir(argv[1]) < 0)
-		printf("-minishell: cd: %s: no such file or directory\n", argv[1]);
+		ft_printf("-minishell: cd: %s: no such file or directory\n", argv[1]);
 	return (errno);
 }

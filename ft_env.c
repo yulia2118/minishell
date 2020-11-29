@@ -10,33 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
+#include "minishell.h"
 
-int		ft_strlen(char *s)
+int	ft_env(char **environ)
 {
-	int	i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
-
-void	ft_env(char **environ)
-{
-	char **env;
-
-	env = environ;
-	while (*env)
+	while (*environ)
 	{
-		write(1, *env, ft_strlen(*env));
+		write(1, *env, ft_strlen(*environ));
 		write(1, "\n", 1);
-		env++;
+		environ++;
+		return (errno);
 	}
-}
-
-int		main(int argc, char **argv, char **environ)
-{
-	ft_env(environ);
-	return (0);
 }

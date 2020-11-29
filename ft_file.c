@@ -31,7 +31,7 @@ char			*get_env_value(char *var, char **environ)
 	if (!(key = (char *)malloc(sizeof(char) * (ft_strlen(var) + 2))))
 		return (NULL);
 	ft_strlcat(key, var, ft_strlen(var));
-	ft_strlcat(key, "=/0", 2);
+	ft_strlcat(key, "=\0", 2);
 	while (*environ)
 	{
 		if (!ft_strncmp(*environ, key, ft_strlen(key)))
@@ -94,6 +94,6 @@ int				ft_file(char *cmd, char **argv, char **environ)
 	file = get_path(cmd, environ);
 	res = execve(file, argv, environ);
 	if (res < 0)
-		printf("-minishell: %s: command not found\n", cmd);
+		ft_printf("-minishell: %s: command not found\n", cmd);
 	return (errno);
 }
