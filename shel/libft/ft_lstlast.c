@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstlast.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wsallei <wsallei@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: fdarrin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/05/10 23:30:40 by wsallei           #+#    #+#             */
-/*   Updated: 2020/05/10 23:36:48 by wsallei          ###   ########.fr       */
+/*   Created: 2020/05/28 23:11:41 by fdarrin           #+#    #+#             */
+/*   Updated: 2020/05/29 14:15:08 by fdarrin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,10 @@
 
 t_list	*ft_lstlast(t_list *lst)
 {
-	t_list *tmp;
-
-	if (!lst)
-		return (NULL);
-	tmp = lst;
-	while (tmp->next != NULL)
-		tmp = tmp->next;
-	return (tmp);
+	if (lst != NULL)
+	{
+		while (lst->next != NULL)
+			lst = lst->next;
+	}
+	return (lst);
 }

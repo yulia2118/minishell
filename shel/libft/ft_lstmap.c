@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstmap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wsallei <wsallei@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: fdarrin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/05/12 16:14:35 by wsallei           #+#    #+#             */
-/*   Updated: 2020/05/12 16:35:55 by wsallei          ###   ########.fr       */
+/*   Created: 2020/05/28 23:14:30 by fdarrin           #+#    #+#             */
+/*   Updated: 2020/05/29 16:19:30 by fdarrin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,22 @@
 
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 {
-	t_list *lstnew;
-	t_list *newtmp;
+	t_list	*new_elem;
+	t_list	*new_lst;
 
-	if (!lst || !f || !del)
+	if (!lst || !f || !(new_elem = ft_lstnew(f(lst->content))))
 		return (NULL);
-	newtmp = NULL;
-	while (lst)
+	new_lst = new_elem;
+	lst = lst->next;
+	while (lst != NULL)
 	{
-		if (!(newtmp = ft_lstnew(f(lst->content))))
+		if (!(new_elem = ft_lstnew(f(lst->content))))
 		{
-			ft_lstclear(&lstnew, del);
+			ft_lstclear(&new_lst, del);
 			return (NULL);
 		}
-		ft_lstadd_back(&lstnew, newtmp);
+		ft_lstadd_back(&new_lst, new_elem);
 		lst = lst->next;
 	}
-	return (lstnew);
+	return (new_lst);
 }

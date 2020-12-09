@@ -3,19 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_isascii.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wsallei <wsallei@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: fdarrin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/05/02 15:11:51 by wsallei           #+#    #+#             */
-/*   Updated: 2020/05/02 15:38:52 by wsallei          ###   ########.fr       */
+/*   Created: 2020/05/23 23:09:28 by fdarrin           #+#    #+#             */
+/*   Updated: 2020/05/24 21:20:37 by fdarrin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int		ft_isascii(int ch)
+int	ft_isascii(int c)
 {
-	if (ch >= 0 && ch <= 127)
-		return (1);
-	else
-		return (0);
+	return (c >= 0 && c <= 127);
 }

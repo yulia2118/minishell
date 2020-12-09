@@ -3,30 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wsallei <wsallei@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: fdarrin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/04/29 20:59:48 by wsallei           #+#    #+#             */
-/*   Updated: 2020/05/06 16:38:54 by wsallei          ###   ########.fr       */
+/*   Created: 2020/05/17 17:08:44 by fdarrin           #+#    #+#             */
+/*   Updated: 2020/05/27 00:45:39 by fdarrin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memcpy(void *destination, const void *source, size_t n)
+void	*ft_memcpy(void *dest, const void *src, size_t n)
 {
-	unsigned char		*tmp1;
-	unsigned const char	*tmp2;
-	size_t				i;
+	unsigned char *d;
+	unsigned char *s;
 
-	i = 0;
-	tmp1 = (unsigned char*)destination;
-	tmp2 = (unsigned char*)source;
-	if ((n == 0) || (destination == source))
-		return (destination);
-	while (i < n)
-	{
-		tmp1[i] = tmp2[i];
-		i++;
-	}
-	return (destination);
+	d = (unsigned char *)dest;
+	s = (unsigned char *)src;
+	if (d == NULL && s == NULL)
+		return (NULL);
+	while (n-- > 0)
+		*d++ = *s++;
+	return (dest);
 }

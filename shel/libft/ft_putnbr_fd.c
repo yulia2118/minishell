@@ -3,27 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wsallei <wsallei@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: fdarrin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/05/09 20:35:40 by wsallei           #+#    #+#             */
-/*   Updated: 2020/05/09 20:35:42 by wsallei          ###   ########.fr       */
+/*   Created: 2020/05/23 23:58:25 by fdarrin           #+#    #+#             */
+/*   Updated: 2020/05/31 00:13:10 by fdarrin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static	void	ft_parsnbr(int n, int fd)
+void	ft_putnbr_fd(int n, int fd)
 {
-	if (n / 10 != 0)
-		ft_parsnbr((n / 10), fd);
-	ft_putchar_fd((-(n % 10) + '0'), fd);
-}
+	char	res;
+	int		min;
 
-void			ft_putnbr_fd(int n, int fd)
-{
+	min = 0;
+	if (n == -2147483648)
+	{
+		min++;
+		n++;
+	}
 	if (n < 0)
-		ft_putchar_fd('-', fd);
-	else
-		n = -n;
-	ft_parsnbr(n, fd);
+	{
+		write(fd, "-", 1);
+		n = n * (-1);
+	}
+	if (n / 10 != 0)
+		ft_putnbr_fd(n / 10, fd);
+	res = (n % 10) + 48;
+	if (min == 1)
+		res = 56;
+	write(fd, &res, 1);
 }

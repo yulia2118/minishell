@@ -3,30 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wsallei <wsallei@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: fdarrin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/04/30 16:00:59 by wsallei           #+#    #+#             */
-/*   Updated: 2020/04/30 16:37:20 by wsallei          ###   ########.fr       */
+/*   Created: 2020/05/23 16:45:27 by fdarrin           #+#    #+#             */
+/*   Updated: 2020/05/28 14:05:26 by fdarrin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int		ft_memcmp(const void *arr1, const void *arr2, size_t n)
+int			ft_memcmp(const void *s1, const void *s2, size_t n)
 {
+	unsigned char		*a;
+	unsigned char		*b;
 	size_t				i;
-	unsigned const char	*tmp1;
-	unsigned const char	*tmp2;
 
+	a = (unsigned char *)s1;
+	b = (unsigned char *)s2;
 	i = 0;
-	tmp1 = arr1;
-	tmp2 = arr2;
 	while (i < n)
 	{
-		if (tmp1[i] == tmp2[i])
-			i++;
-		else
-			return (tmp1[i] - tmp2[i]);
+		if (a[i] != b[i])
+			return (a[i] - b[i]);
+		i++;
 	}
 	return (0);
 }

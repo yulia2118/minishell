@@ -1,33 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   strrchr.c                                          :+:      :+:    :+:   */
+/*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wsallei <wsallei@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: fdarrin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/05/01 20:25:50 by wsallei           #+#    #+#             */
-/*   Updated: 2020/05/01 22:56:15 by wsallei          ###   ########.fr       */
+/*   Created: 2020/05/23 20:23:17 by fdarrin           #+#    #+#             */
+/*   Updated: 2020/05/27 16:49:25 by fdarrin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strrchr(const char *str, int ch)
+char	*ft_strrchr(const char *s, int c)
 {
-	char	*s1;
-	char	*s2;
-	int		i;
+	int		len;
+	char	*str;
 
-	s2 = NULL;
-	s1 = (char *)str;
-	i = 0;
-	while (s1[i] != '\0')
+	len = ft_strlen(s);
+	str = (char*)s;
+	str += len;
+	while (len >= 0)
 	{
-		if (s1[i] == ch)
-			s2 = &s1[i];
-		i++;
+		if (*str == (char)c)
+			return (str);
+		str--;
+		len--;
 	}
-	if (s1[i] == '\0' && ch == '\0')
-		return (&s1[i]);
-	return (s2);
+	return (NULL);
 }

@@ -3,52 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wsallei <wsallei@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: fdarrin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/05/02 22:59:36 by wsallei           #+#    #+#             */
-/*   Updated: 2020/05/03 00:04:56 by wsallei          ###   ########.fr       */
+/*   Created: 2020/05/23 23:43:58 by fdarrin           #+#    #+#             */
+/*   Updated: 2020/05/27 20:18:55 by fdarrin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static	size_t		ft_sep(char c, char const *set)
+char	*ft_strtrim(char const *s1, char const *set)
 {
-	int i;
+	char	*str;
+	size_t	len;
 
-	i = 0;
-	while (set[i])
-	{
-		if (c == set[i])
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-char				*ft_strtrim(char const *s1, char const *set)
-{
-	int				f;
-	int				s;
-	unsigned int	siz;
-	char			*rez;
-
-	s = 0;
 	if (!s1 || !set)
 		return (NULL);
-	while (s1[s] && ft_sep((char)s1[s], set))
-		s++;
-	if ((f = ft_strlen(s1) - 1) != -1)
-	{
-		while (f >= 0 && ft_sep((char)s1[f], set))
-			f--;
-	}
-	if (&s1[s] == &s1[f])
-		siz = 2;
-	else
-		siz = &s1[f] - &s1[s] + 2;
-	if (!(rez = malloc(sizeof(char) * siz)))
+	while (*s1 && ft_strchr(set, *s1))
+		s1++;
+	len = ft_strlen(s1);
+	while (len && ft_strchr(set, s1[len]))
+		len--;
+	if (!(str = ft_substr((char *)s1, 0, len + 1)))
 		return (NULL);
-	ft_strlcpy(rez, &s1[s], siz);
-	return (rez);
+	return (str);
 }

@@ -3,60 +3,49 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wsallei <wsallei@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: fdarrin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/05/04 19:36:17 by wsallei           #+#    #+#             */
-/*   Updated: 2020/05/10 22:04:39 by wsallei          ###   ########.fr       */
+/*   Created: 2020/05/23 23:49:00 by fdarrin           #+#    #+#             */
+/*   Updated: 2020/05/28 17:06:49 by fdarrin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int		ft_sizenum(int n)
+static int	countlen(int n)
 {
-	long int	num;
-	int			cnum;
+	int i;
 
-	cnum = 0;
-	num = n;
-	if (n == 0)
-		return (1);
-	if (num < 0)
+	i = 1;
+	if (n < 0)
+		i++;
+	while (n /= 10)
 	{
-		num *= -1;
-		cnum++;
+		i++;
 	}
-	while (n != 0)
-	{
-		n /= 10;
-		cnum++;
-	}
-	return (cnum);
+	return (i);
 }
 
-char			*ft_itoa(int n)
+char		*ft_itoa(int n)
 {
-	int			size;
-	long int	num;
-	char		*res;
+	int		len;
+	char	*str;
 
-	size = ft_sizenum(n);
-	num = n;
-	if (!(res = malloc(sizeof(*res) * (size + 1))))
+	len = countlen(n);
+	if (!(str = (char *)malloc(sizeof(char) * (len + 1))))
 		return (NULL);
-	if (num < 0)
+	str[len] = '\0';
+	if (n == 0)
+		str[0] = '0';
+	if (n < 0)
+		str[0] = '-';
+	while (n)
 	{
-		num *= -1;
-		res[0] = '-';
+		if (n < 0)
+			str[--len] = (n % 10) * -1 + '0';
+		if (n > 0)
+			str[--len] = n % 10 + '0';
+		n /= 10;
 	}
-	res[size] = '\0';
-	if (num == 0)
-		res[size - 1] = '0';
-	while (size > 0 && num != 0)
-	{
-		res[size - 1] = (num % 10) + '0';
-		num /= 10;
-		size--;
-	}
-	return (res);
+	return (str);
 }

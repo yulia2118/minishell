@@ -3,55 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wsallei <wsallei@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: fdarrin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/05/02 12:15:53 by wsallei           #+#    #+#             */
-/*   Updated: 2020/05/05 21:33:23 by wsallei          ###   ########.fr       */
+/*   Created: 2020/05/23 21:27:49 by fdarrin           #+#    #+#             */
+/*   Updated: 2020/05/28 16:10:45 by fdarrin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static	int		ft_over(char *s1, int pos_neg)
+int					ft_atoi(const char *nptr)
 {
-	int over;
-	int chek;
-	int i;
+	int				s;
+	unsigned long	n;
 
-	i = 0;
-	over = 0;
-	while (s1[i] >= '0' && s1[i] <= '9')
+	s = 1;
+	n = 0;
+	while (*nptr == ' ' || *nptr == '\n' || *nptr == '\t' || *nptr == '\v' ||
+			*nptr == '\f' || *nptr == '\r')
+		nptr++;
+	if (*nptr == '-' || *nptr == '+')
 	{
-		chek = over;
-		over = over * 10 + (s1[i] - '0');
-		if (i > 17)
-		{
-			if (over > chek && pos_neg == -1 && (s1[i] - '0') > 8)
-				return (0);
-			if (over > chek && pos_neg == 1 && (s1[i] - '0') > 7)
-				return (-1);
-		}
-		i++;
+		if (*nptr == '-')
+			s = -1;
+		nptr++;
 	}
-	return (over);
-}
-
-int				ft_atoi(const char *str)
-{
-	long long int	res;
-	int				pos_neg;
-
-	res = 0;
-	pos_neg = 1;
-	while (*str == '\t' || *str == ' ' || *str == '\n' || *str == '\r'
-		|| *str == '\v' || *str == '\f')
-		str++;
-	if (*str == '-' || *str == '+')
+	while (*nptr >= '0' && *nptr <= '9' && *nptr != '\0')
 	{
-		if (*str == '-')
-			pos_neg = -1;
-		str++;
+		if ((n * 10 + (*nptr - 48)) < n)
+			return ((s > 0) ? -1 : 0);
+		n = n * 10 + (*nptr - 48);
+		nptr++;
 	}
-	res = ft_over((char *)str, pos_neg);
-	return (res * pos_neg);
+	return (s * n);
 }

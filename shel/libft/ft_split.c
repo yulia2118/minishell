@@ -3,99 +3,86 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wsallei <wsallei@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: fdarrin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/05/03 20:57:36 by wsallei           #+#    #+#             */
-/*   Updated: 2020/05/06 11:44:42 by wsallei          ###   ########.fr       */
+/*   Created: 2020/05/23 23:46:34 by fdarrin           #+#    #+#             */
+/*   Updated: 2020/05/30 22:04:37 by fdarrin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static	char		**ft_delmem(char **res, size_t f)
+static void		freemem(char **arr)
 {
-	while (f)
+	size_t	j;
+
+	j = 0;
+	while (arr[j])
 	{
-		free(res[f]);
-		f--;
+		free(arr[j]);
+		j++;
 	}
-	free(res);
-	return (NULL);
+	free(arr);
 }
 
-static	int			ft_sizewrd(char *s, char c, int i)
-{
-	int count;
-
-	count = 0;
-	while (s[i] != '\0' && s[i] != c)
-	{
-		i++;
-		count++;
-	}
-	return (count);
-}
-
-static	int			ft_cword(char *s, char c)
+static size_t	countwords(char const *s, char c)
 {
 	size_t	i;
-	int		count;
-	int		wrd;
+	size_t	size;
 
-	count = 0;
 	i = 0;
-	wrd = 0;
-	while (s[i] != 0)
+	size = 0;
+	while (s[i])
 	{
-		if (s[i] == c)
-			wrd = 0;
-		if (wrd == 0 && s[i] != c)
-		{
-			wrd = 1;
-			count++;
-		}
+		if (s[i] != c)
+			size++;
+		while (s[i + 1] && s[i] != c)
+			i++;
 		i++;
 	}
-	return (count);
+	return (size);
 }
 
-static	char		**ft_crtwrd(char **res, char *s, char c)
+static size_t	countchar(char const *s, char c)
 {
-	size_t i;
-	size_t f;
-	size_t g;
+	size_t	i;
+	size_t	len;
 
 	i = 0;
-	f = 0;
-	g = 0;
-	while (s[i] != '\0')
+	len = 0;
+	while (s[i] == c)
+		i++;
+	while (s[i] && s[i] != c)
 	{
-		g = 0;
-		while (s[i] == c)
-			i++;
-		if (s[i] == '\0')
-			break ;
-		if (!(res[f] = malloc(sizeof(**res) * ft_sizewrd(s, c, i) + 1)))
-			return (ft_delmem(res, f));
-		while (s[i] != '\0' && s[i] != c)
-			res[f][g++] = s[i++];
-		res[f][g] = '\0';
-		f++;
+		i++;
+		len++;
 	}
-	res[f] = NULL;
-	return (res);
+	return (len);
 }
 
-char				**ft_split(char const *s, char c)
+char			**ft_split(char const *s, char c)
 {
-	int		f;
-	char	**res;
+	char		**array;
+	size_t		i;
+	size_t		start;
 
-	if (!s)
+	if (!s || !(array = (char**)malloc(sizeof(char*) * (countwords(s, c) + 1))))
 		return (NULL);
-	f = ft_cword((char *)s, c);
-	if (!(res = malloc(sizeof(res) * (f + 1))))
-		return (NULL);
-	res = ft_crtwrd(res, (char *)s, c);
-	return (res);
+	i = 0;
+	start = 0;
+	while (i < countwords(s, c))
+	{
+		while (s[start] == c)
+			start++;
+		if (!(array[i] = ft_substr(s, start, countchar(&s[start], c))))
+		{
+			freemem(array);
+			return (NULL);
+		}
+		while (s[start] && s[start] != c)
+			start++;
+		i++;
+	}
+	array[i] = NULL;
+	return (array);
 }
