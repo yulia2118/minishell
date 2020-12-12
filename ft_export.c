@@ -10,19 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-
-int			compare_str(const char *s1, const char *s2)
-{
-	while (*s1)
-	{
-		if (*s1 != *s2)
-			return (*s1 - *s2);
-		s1++;
-		s2++;
-	}
-	return (*s1 - *s2);
-}
+#include "../../include/minishell.h"
 
 int			ft_strlen2(char **array)
 {
@@ -32,69 +20,6 @@ int			ft_strlen2(char **array)
 	while (array[i])
 		i++;
 	return (i);
-}
-
-void		change_env(t_env *current_env, t_env *env)
-{
-	if (current_env->value && env->value == NULL)
-		free(env->value);
-	else
-	{
-		free(current_env->value);
-		current_env->value = env->value;
-	}
-	free(env->key);
-	free(env);
-}
-
-void		sort_env(t_list *first_elem, t_list *second_elem, t_list *temp_elem)
-{
-	void	*temp_content;
-
-	if (temp_elem)
-		first_elem->next->next = temp_elem;
-	temp_content = first_elem->content;
-	first_elem->content = second_elem->content;
-	second_elem->content = temp_content;
-}
-
-t_env		*init_env(char **key_value)
-{
-	t_env	*env;
-
-	if ((env = (t_env*)malloc(sizeof(t_env))) == NULL)
-		return (NULL);
-	env->key = key_value[0];
-	env->value = key_value[1];
-	return (env);
-}
-
-void		add_env(t_list *env_list, t_env *env)
-{
-	int		cmp;
-	t_list	*temp_elem;
-	t_env	*current_env;
-
-	while (env_list)
-	{
-		current_env = (t_env*)env_list->content;
-		cmp = compare_str(env->key, current_env->key);
-		if (cmp <= 0 || env_list->next == NULL)
-		{
-			if (cmp < 0)
-			{
-				temp_elem = env_list->next;
-				env_list->next = ft_lstnew(env);
-				sort_env(env_list, env_list->next, temp_elem);
-			}
-			else if (cmp == 0)
-				change_env(current_env, env);
-			else
-				env_list->next = ft_lstnew(env);
-			break ;
-		}
-		env_list = env_list->next;
-	}
 }
 
 void		print_export(t_list *env_list)
@@ -168,13 +93,13 @@ t_list		*list_from_environ(char **environ)
 	return (env_list);
 }
 
-int			ft_export(int argc, char **argv, char **environ)
+int			ft_export(char **argv, t_config *cnf)
 {
 	t_list	*env_list;
 	char	**key_value;
 
-	env_list = list_from_environ(environ);
-	if (argc == 1)
+	env_list = list_from_environ(cnf->env);
+	if (!argv[1])
 		print_export(env_list);
 	else
 	{
@@ -191,5 +116,7 @@ int			ft_export(int argc, char **argv, char **environ)
 			argv++;
 		}
 	}
+	cnf->env = list_to_array(env_list);
+	free(env_list);
 	return (errno);
 }

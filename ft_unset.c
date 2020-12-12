@@ -10,57 +10,58 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../include/minishell.h"
 
-void		free_env(void *argv)
+void		remove_env(char *argv, t_config *cnf)
 {
-	t_env	*env;
+	char	**new_env;
+	int		env_len;
+	int		remove;
+	int		i;
 
-	env = (t_env*)argv;
-	free(env->value);
-	free(env->key);
-	free(env);
-}
-
-void		remove_env(t_list *env_list, t_list *prev_element)
-{
-	t_list *tmp_elem;
-
-	free_env(env_list->content);
-	if (prev_element)
+	env_len = ft_strlen2(cnf->env);
+	if (!(new_env = (char **)malloc(sizeof(char *) * env_len)))
+		exit(0);
+	new_env[env_len - 1] = NULL;
+	i = 0;
+	remove = 0;
+	while (cnf->env[i])
 	{
-		prev_element->next = env_list->next;
-		free(env_list);
-	}
-	else if (env_list->next)
-	{
-		tmp_elem = env_list->next;
-		env_list->content = env_list->next->content;
-		env_list->next = env_list->next->next;
-		free(tmp_elem);
-	}
-}
-
-int			ft_unset(char **argv, t_list *env_list)
-{
-	t_list	*prev_element;
-	t_env	*current_env;
-
-	while (*argv)
-	{
-		prev_element = NULL;
-		while (env_list)
+		if (!ft_strncmp(cnf->env[i], argv, ft_strlen(argv)))
 		{
-			current_env = (t_env*)env_list->content;
-			if (!compare_str(current_env->key, *argv))
-			{
-				remove_env(env_list, prev_element);
-				return (errno);
-			}
-			prev_element = env_list;
-			env_list = env_list->next;
+			free(cnf->env[i]);
+			remove = 1;
 		}
-		argv++;
+		else
+			new_env[i - remove] = cnf->env[i];
+		i++;
+	}
+	free(cnf->env);
+	cnf->env = new_env;
+}
+
+int			env_exist(char *argv, t_config *cnf)
+{
+	int	i;
+
+	i = 0;
+	while (cnf->env[i++])
+	{
+		if (!ft_strncmp(cnf->env[i], argv, ft_strlen(argv)))
+			return (1);
+	}
+	return (0);
+}
+
+int			ft_unset(char **argv, t_config *cnf)
+{
+	int		i;
+
+	i = 0;
+	while (argv[++i])
+	{
+		if (env_exist(argv[i], cnf))
+			remove_env(argv[i], cnf);
 	}
 	return (errno);
 }
