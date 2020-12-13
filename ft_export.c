@@ -116,6 +116,7 @@ int			ft_export(char **argv, t_config *cnf)
 			argv++;
 		}
 	}
+	free(cnf->env);
 	cnf->env = list_to_array(env_list);
 	free(env_list);
 	return (errno);
